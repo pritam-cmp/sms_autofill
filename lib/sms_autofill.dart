@@ -64,6 +64,7 @@ class SmsAutoFill {
 }
 
 class PinFieldAutoFill extends StatefulWidget {
+  final bool testMode;
   final int codeLength;
   final bool autoFocus;
   final TextEditingController? controller;
@@ -81,6 +82,8 @@ class PinFieldAutoFill extends StatefulWidget {
 
   const PinFieldAutoFill(
       {Key? key,
+      this.testMode =
+          const bool.fromEnvironment('TEST_MODE', defaultValue: false),
       this.keyboardType = const TextInputType.numberWithOptions(),
       this.textInputAction = TextInputAction.done,
       this.focusNode,
@@ -110,6 +113,24 @@ class _PinFieldAutoFillState extends State<PinFieldAutoFill> with CodeAutoFill {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.testMode) {
+      return TextField(
+        key: const Key('otp_test_input'),
+        controller: controller,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        focusNode: widget.focusNode,
+        enabled: widget.enabled,
+        autofocus: widget.autoFocus,
+        decoration: const InputDecoration(
+          hintText: 'Enter OTP',
+        ),
+        onChanged: widget.onCodeChanged,
+        onSubmitted: widget.onCodeSubmitted,
+        inputFormatters: widget.inputFormatters,
+      );
+    }
+
     return PinInputTextField(
       enabled: widget.enabled,
       pinLength: widget.codeLength,
